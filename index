@@ -1,0 +1,66 @@
+<?php
+if ($argc > 1) {
+    $content = file_get_contents($argv[1]);
+    $result = "";
+	$line = 1;
+	$coll = 0;
+    for ($i = 0; $i < strlen($content); $i++) {
+        switch ($content[$i]) {
+            case "\r" :
+            case "\n" : 
+            	$result .= "\n";
+            	$coll = 0;
+            	$line++;
+                break;
+            case "\t" : $result .= "    ";
+                break;
+            case " " : $result .= " ";
+				break;
+            default:
+            	$ord = ord($content[$i]);
+            	$czechSymbols = array(
+            		138, // Š
+            		141, // Ť
+            		142, // Ž
+            		154, // š
+            		157, // ť
+            		158, // ž
+            		193, // Á
+            		200, // Č
+            		201, // É
+            		204, // Ě
+            		205, // Í
+            		207, // Ď
+            		210, // Ň
+            		211, // Ó
+            		216, // Ř
+            		217, // Ů
+            		218, // Ú
+            		221, // Ý
+            		225, // a
+            		232, // č
+            		233, // é
+            		236, // ě
+            		237, // í
+            		239, // ď
+            		242, // ň
+            		243, // ó
+            		248, // ř
+            		249, // ů
+            		250, // ú
+            		253, // ý
+            		);
+                if (($ord > 32) && ($ord < 127)) $result .= chr(ord($content[$i]));
+                elseif (in_array($ord, $czechSymbols)) $result .= chr(odr($content[$i]));
+                else {
+                	echo "Some not valid symbol (LINE=$line COLL=$coll ASCII=$ord CHAR=" . $content[$i] . ")\n"; 
+                	return (1);
+                }
+                break;
+        }
+        $coll++;
+    }
+    unlink($argv[1]);
+    file_put_contents($argv[1], $result);
+}
+
