@@ -92,7 +92,8 @@ void studrenDrawTriangle(S_Renderer *pRenderer,
 						 S_Coords *t0, S_Coords *t1, S_Coords *t2,
                          int x1, int y1,
                          int x2, int y2,
-                         int x3, int y3
+                         int x3, int y3,
+						 double h1, double h2, double h3
                          )
 {
 
@@ -196,8 +197,13 @@ void studrenDrawTriangle(S_Renderer *pRenderer,
 
 				/* interpolace z-souradnice */
 				z = w1 * v1->z + w2 * v2->z + w3 * v3->z;
-				u = w1 * t0->x + w2 * t1->x + w3 * t2->x;
-				v = w1 * t0->y + w2 * t1->y + w3 * t2->y;
+
+				double jmenovatel = w1 / h1 + w2 / h2 + w3 / h3;
+				u = (w1 * t0->x / h1) + (w2 * t1->x / h2) + (w3 * t2->x / h3);
+				v = (w1 * t0->y / h1) + (w2 * t1->y / h2) + (w3 * t2->y / h3);
+
+				u = u / jmenovatel;
+				v = v / jmenovatel;
 
 				newColor = studrenTextureValue((S_StudentRenderer *)pRenderer, u, v);
 
@@ -259,11 +265,11 @@ void studrenProjectTriangle(S_Renderer *pRenderer, S_Model *pModel, int i, float
     triangle = trivecGetPtr(pModel->triangles, i);
 
     /* ziskame offset pro vrcholy n-teho snimku */
-    vertexOffset = (((int) n) % pModel->frames) * pModel->verticesPerFrame;
-    vertexOffset1 = (((int) (n + 1.0)) % pModel->frames) * pModel->verticesPerFrame;
+    vertexOffset = (N % pModel->frames) * pModel->verticesPerFrame;
+    vertexOffset1 = ((N + 1) % pModel->frames) * pModel->verticesPerFrame;
     /* ziskame offset pro normaly trojuhelniku n-teho snimku */
-    normalOffset = (((int) n) % pModel->frames) * pModel->triangles->size;
-    normalOffset1 = (((int) (n + 1.0)) % pModel->frames) * pModel->triangles->size;
+    normalOffset = (N % pModel->frames) * pModel->triangles->size;
+    normalOffset1 = ((N + 1) % pModel->frames) * pModel->triangles->size;
 
     /* indexy vrcholu pro i-ty trojuhelnik n-teho snimku - pricteni offsetu */
     i0 = triangle->v[ 0 ] + vertexOffset;

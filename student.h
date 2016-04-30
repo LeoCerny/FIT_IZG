@@ -75,7 +75,8 @@ void studrenDrawTriangle(S_Renderer *pRenderer,
 						 S_Coords *t0, S_Coords *t1, S_Coords *t2,
                          int x1, int y1,
                          int x2, int y2,
-                         int x3, int y3
+                         int x3, int y3,
+						 double h1, double h2, double h3
                          );
 
 /* Vykresli i-ty trojuhelnik n-teho klicoveho snimku modelu
